@@ -1,0 +1,337 @@
+﻿#### INSTALACION:
+
+Bootear SO desde USB
+
+loadkeys es
+lsblk
+iwd
+device list
+station device scan
+station device get-networks
+station device connect SSID
+ping 1.1.1.1
+pacman -Sy wget
+wget https://raw.githubusercontent.com/SMhub1975/arch/master/archi.sh
+sh archi.sh
+# timedatectl set-ntp true
+fdisk /dev/sda (MBR) 
+n --- 1 --- +200M 
+n --- 2 --- +2G
+n --- 3 --- +25G
+n --- 4 --- +210G
+write
+mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/sda3
+mkfs.ext4 /dev/sda4
+mkswap /dev/sda2
+swapon /dev/sda2
+mount /dev/sda3 /mnt
+mkdir /mnt/boot
+mkdir /mnt/home
+mount /dev/sda4 /mnt/home
+mount /dev/sda1 /mnt/boot
+pacstrap /mnt base base-devel linux networkmanager git vim
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+pacman -S grub
+grub-install --target=i386-pc /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+systemctl enable NetworkManager
+passwd
+vim /etc/locale.gen
+locale-gen
+vim /etc/locale.conf
+LANG=es_AR.UTF-8
+ln -sf /usr/share/zoneinfo/America/Argentina/Buenos_Aires /etc/localtime
+vim /etc/hostname
+archlinux
+vim /etc/hosts
+127.0.0.1 localhost
+::1       localhost
+127.0.1.1 arch.localdomain arch
+useradd -m -g wheel XXXXX
+passwd XXXXX
+vim /etc/sudoers.conf (editar)
+exit
+umount -R /mnt
+cfdisk (marcar particion booteable *) write
+reboot
+
+------------------------------------------------------------------------------------------------------
+
+mount /dev/sda3 /mnt 
+
+arch-chroot /mnt      #### (exit para salir)
+
+pacman -S broadcom-wl xorg-server xorg-xinit xf86-video-intel networkmanager gnu-free-fonts
+ gvfs xdg-user-dirs ntfs-3g 
+
+systemctl enable lightdm
+
+# timedatectl set-timezone America/Argentina/Buenos_Aires
+
+------------------------------------------------------------------------------------------------------
+
+### PROGRAMAS VARIOS:
+
+sudo pacman -S xorg-xbacklight picom xorg-xrandr w3m zsh firefox neofetch git htop zip unizp
+ ranger pamixer pulseaudio pulsemixer sudo rxvt-unicode sxiv zathura zathura-pdf-mupdf
+ neomutt ncmpcpp mpd mpv mousepad tilix tumbler vince pcmanfm bleachbit papirus-icon-theme
+ arc-gtk-theme vlc engrampa volumeicon libreofice-fresh-es transmission-gtk xbindkeys
+ virtualbox rhythmbox gparted catfish galculator gimp torbrowser-launcher epdfview
+ ristretto feh lxappearance thunar nano wildmidi calcurse alsautils network-manager-applet
+ lightdm lightdm-gtk-greeter xfce4-terminal xcompmgr gtop mat2
+                
+------------------------------------------------------------------------------------------------------
+
+### DESKTOP ENVIRONMENT:
+
+sudo pacman -S i3 xfce4 gnome cinnamon mate budgie-desktop openbox awesome deepin lxde
+ bspwm            #### xfce4-goodies lightdm-gtk-greeter-settings (OPCIONALES) ####
+
+------------------------------------------------------------------------------------------------------
+
+### BRILLO:
+
+sudo pacman -S xorg-xbacklight
+
+xbacklight -10 
+xbacklight +10
+
+------------------------------------------------------------------------------------------------------
+
+### CAMBIO DE RESOLUCION:
+
+sudo pacman -S xorg-xrandr
+
+xrandr -s 1440x900 en Virtuabox - 1920x1080 en Lenovo - 1080x600 en Asus
+
+------------------------------------------------------------------------------------------------------
+
+### WIFI:
+
+station wlan0 connect "Fibertel WiFi363 2.4GHz"
+
+Lenovo Edege: Broadcom Limited BCM4352 802.11ac Wireless Network Adapter [14e4:43b1] (rev 03)
+
+nmtui
+
+nmcli device wifi connect XXXXX password XXXXX ifname wlp1s0
+
+------------------------------------------------------------------------------------------------------
+
+### WHONIX:
+
+VBoxManage setextradata Whonix-Workstation-XFCE "VBoxInternal/Devices/lsilogicsas/0/LUN#0/AttachedDriver/Config/ReadOnly" 1
+
+VBoxManage setextradata Whonix-Workstation-XFCE "VBoxInternal/Devices/lsilogicsas/0/LUN#0/AttachedDriver/Config/ReadOnly"
+
+VBoxSDL --startvm Whonix-Gateway-XFCE
+
+VBoxHeadless --startvm Whonix-Gateway-XFCE
+
+------------------------------------------------------------------------------------------------------
+
+### ZOOM:
+
+sudo pacman -U zoom_x86_64.pkg.tar
+
+------------------------------------------------------------------------------------------------------
+
+### QLCPLUS:
+
+sudo pacman -U qlcplus-qt5-4.12.2-0-x86_64.pkg.tar.xz (Previamente descargar el archivo
+ y abrir terminal
+en la carpeta contenedora, ej "programas linux", luego de instalar reboot) 
+agregar nuevos fixtures aca: /usr/share/qlcplus/fixtures/
+
+------------------------------------------------------------------------------------------------------
+
+### STEAM:
+
+sudo vim /etc/pacman.conf
+
+# Modificar asi:
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+sudo pacman -Syu
+
+sudo pacman -S steam
+
+------------------------------------------------------------------------------------------------------
+
+### XAMPP:
+
+Descargue el instalador desde su página oficial.
+
+El archivo descargado es un script de instalación. Hágalo ejecutable y arránquelo escribiendo:
+
+
+Acceder como root
+
+chmod +x xampp-linux-version-installer.run
+
+./xampp-linux-version-installer.run
+
+/opt/lampp/lampp start,stop,restart (ORDENES)
+
+sudo pacman -S libgda-mysql (para conectar con LibreOffice)
+
+/usr/bin/libreoffice --base
+
+--------------------------------------------------------------------------------------------------------
+
+### AUTOLOGIN:
+
+~/.bash_profile ### ~/.zprofile
+
+if systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  exec startx
+fi
+
+sudo vim /etc/lightdm/lightdm.conf
+
+[Seat:*] 
+pam-service=lightdm-autologin
+autologin-user=XXXXX
+autologin-user-timeout=0
+
+groupadd -r autologin
+
+gpasswd -a XXXXX autologin
+
+------------------------------------------------------------------------------------------------------
+
+### ZIP:
+
+zip -r archivo-comprimido.zip archivo-a-comrpimir
+
+unzip archivo-comprimido.zip
+
+tar -czvf nombre-directorio.tar.gz nombre-directorio
+
+tar -xzvf backup-directorio-usuario.tar.gz
+
+------------------------------------------------------------------------------------------------------
+
+### LIMPIEZA CACHE PACMAN:
+
+sudo pacman -Sc
+
+pacman -Rns package_name (remover packs)
+
+------------------------------------------------------------------------------------------------------
+
+### USB BOOTEABLE Y WIPE:
+
+sudo fdisk -l (para chequear que unidad X poner en el siguiente comando) 
+
+sudo dd bs=4M if=Programas/slitaz-rolling-core-5in1.iso of=/dev/sdb status=progress && sync
+
+sudo dd bs=4M if=Programas/archlinux-2020.05.01-dual.iso of=/dev/sdb status=progress && sync
+
+Clean your flash drive:
+
+sudo wipefs --all /dev/sdX
+
+------------------------------------------------------------------------------------------------------
+
+### CREAR PARTICION:
+
+Editar particiones:sudo cfdisk
+
+sudo cfdisk /dev/sda
+sudo mkfs.vfat -n 'yourlabel' /dev/sda1
+mkfs.fat -F 32 /dev/sda1
+mkfs.ext4 /dev/sda1
+
+# Chequear espacio disponible en particiones
+
+df -h
+
+------------------------------------------------------------------------------------------------------
+
+### SOLUCIONES:
+
+- No se pudo bloquear la base de datos
+ 
+sudo rm /var/lib/pacman/db.lck 
+sudo pacman-mirrors -g 
+
+------------------------------------------------------------------------------------------------------
+
+### CAMBIAR DE SHELL:
+
+chsh -s /bin/zsh
+
+chsh -s /bin/bash
+
+# CAMBIAR THEMES:
+
+prompt -l
+prompt -p
+
+------------------------------------------------------------------------------------------------------
+
+### RANGER:
+
+atajos: z
+cambiar nombre: a
+copiar: y
+pegar: p
+cortar: d
+
+ranger --copy-config=all
+
+~/.config/ranger/rc.conf
+
+set show_hidden true
+set preview_images true
+set preview_images_method ueberzug
+
+------------------------------------------------------------------------------------------------------
+
+### SUCKLESS:
+
+git clone https://git.suckless.org/dwm
+
+git clone https://git.suckless.org/st
+
+# PATCHES (antes de ejecutar el install)
+
+sudo patch -i alpha.diff
+sudo patch -i scroll.diff
+
+sudo make install
+
+------------------------------------------------------------------------------------------------------
+
+### IPHONE:
+
+yay -S ifuse
+# editar  /etc/fuse.conf # allow_other
+enchufar iphone y poner clave
+idevicepair pair
+systemctl status usbmuxd.service
+ifuse -o allow_other ~/media/iphone 
+ls -lah ~/media/iphone/DCIM
+
+------------------------------------------------------------------------------------------------------
+
+### CURL:
+
+curl -O https://raw.githubusercontent.com/SMhub1975/arch/master/.Xresources
+
+------------------------------------------------------------------------------------------------------
+
+### MAT2
+
+mat2 -l
+mat2 -s xxxxx
+mat2 xxxxx
+mat2 --inplace xxxxx
+
+-------------------------------------------------------------------------------------------------------
+

@@ -1,0 +1,15 @@
+
+git config --global user.email "XXXXX"
+git config --global user.name "XXXXX"
+
+git clone https://github.com/SMhub1975/test
+
+git log
+
+git add .
+
+git status
+git commit -m "prueba"
+git push
+
+

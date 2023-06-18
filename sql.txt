@@ -1,0 +1,99 @@
+﻿### WINDOWS
+
+https://dev.mysql.com/doc/refman/8.0/en/windows-start-service.html
+
+# en CMD
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqladmin -u root shutdown
+
+Install Service
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld --install
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld --install-manual
+
+Remove service
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld --remove
+SC DELETE mysql
+
+cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+mysql -u root -p
+
+## en PowerShell
+
+cd \
+
+cd '.\Program Files\MySQL\MySQL Server 8.0\bin'
+
+.\mysql -u root -p
+
+#### LINUX
+
+sudo pacman -S mariadb
+
+sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+
+sudo systemctl start mysqld
+
+sudo systemctl enable mysqld ########### start on boot
+
+mysql_secure_installation
+
+sudo mysql -u root -p
+
+mysql -u root -p bibliotecas < bibliotecas.sql ### desde la shell y como usuario root
+
+
+show databases;
+
+create database bibliotecas;
+
+use bibliotecas;
+
+drop database bibliotecas;
+
+show tables;
+
+describe base;
+
+
+
+SELECT id_bca, Numero, Nombre, Partido, Modo_Rendir, Inscripcion_bibliotecario, `19`, `20`, `21`, `22`, `23`, Total_Deuda, Estado_Subvencion, Observaciones FROM base ORDER BY Numero;
+
+SELECT id_rendicion, id_bca, Rendicion_mes, `2019`, `2020`, `2021`, `2022`, `2023`,  FROM fichero;
+
+SELECT id_bca, Numero, Nombre, Localidad, Partido, Direccion, Codigo_Postal, CONABIP, Telefono, Presidente, Tel_Presidente, Mail_Presidente, Secretario, Tel_Secretario, Mail_Secretario, Tesorero, Tel_Tesorero, Mail_Tesorero, Bibliotecario, Tel_Bibliotecario, Mail_Bibliotecario, Registro_Firmas, Mail_Biblioteca FROM base ORDER BY Numero;
+
+SELECT id_rendicion, id_bca, Rendicion_mes `2019`, `2020`, `2021`, `2022`, `2023` FROM fichero WHERE id_bca IN (8, 13, 15, 65, 77, 81, 84, 85, 101, 103, 108, 118, 123, 148, 153, 163, 167, 172, 173, 176, 181, 210, 212, 239, 264, 266, 280, 283, 297, 300, 316, 327, 337, 363, 365, 375, 404, 406, 409, 417, 418, 422, 426, 437, 445, 464, 468, 488, 490, 496, 505, 506, 507, 508, 515) AND Rendicion_mes LIKE "09 Septiembre";
+
+SELECT Numero, Nombre, Partido, CBU, CUIT FROM base WHERE Estado_Subvencion LIKE "Habilitada" ORDER BY Numero;
+
+SELECT Numero, Nombre, Partido, CBU, CUIT FROM base WHERE Estado_Subvencion LIKE "Suspendida" ORDER BY Numero;
+
+SELECT Numero, Nombre, Localidad, Partido, Observaciones, Total_Deuda, Estado_subvencion, Rendicion_mes, `2019`, `2020`, `2021`, `2022`, `2023` FROM base, fichero
+WHERE base.id_bca = fichero.id_bca;
+
+SELECT id_bca, Numero, Nombre, Partido, `19`, `20`, `21`, `22`, `23`, Total_Deuda, Estado_Subvencion FROM base;
+
+SELECT * FROM base INNER JOIN fichero ON base.id_bca = fichero.id_bca;
+
+SELECT * FROM base WHERE numero LIKE "001";
+
+SELECT * FROM base WHERE bibliotecario is null;
+
+UPDATE fichero SET `2023` = '' WHERE `2023` IN ( 'XXXXX' );
+
+CREATE TABLE base_copia SELECT * FROM base;
+
+CREATE VIEW base AS SELECT * FROM base AS base;
+
+### Copia datos de columnas de una tabla a otra
+
+UPDATE base 
+    SET Longitud = (
+        SELECT Longitud
+        FROM maps
+        WHERE base.Numero = maps.Numero
+    );
+
+
+
